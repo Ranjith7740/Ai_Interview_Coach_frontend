@@ -1,0 +1,63 @@
+<div class="home-page">
+  <div class="hero">
+    <span class="hero__badge">AI Powered</span>
+    <h1 class="hero__title">Ace Your <span class="hero__highlight">Tech Interview</span></h1>
+    <p class="hero__subtitle">
+      Practice with AI-generated questions tailored to your skill. Get instant, detailed feedback to
+      improve faster.
+    </p>
+  </div>
+
+  <div class="home-card">
+    @if (loading()) {
+      <app-spinner message="Generating your question..." />
+    } @else {
+      <div class="form-group">
+        <label class="form-label" for="skill">Choose a Skill</label>
+        <select
+          id="skill"
+          class="form-select"
+          [ngModel]="selectedSkill()"
+          (ngModelChange)="onSkillChange($event)"
+        >
+          <option value="">— Select a skill —</option>
+          @for (skill of skills; track skill) {
+            <option [value]="skill">{{ skill }}</option>
+          }
+        </select>
+      </div>
+
+      @if (error()) {
+        <div class="alert alert--error">{{ error() }}</div>
+      }
+
+      <button
+        class="btn btn--primary btn--block"
+        [disabled]="!selectedSkill()"
+        (click)="startInterview()"
+      >
+        Start Interview
+        <span class="btn__arrow">→</span>
+      </button>
+
+      <div class="features">
+        <div class="feature">
+          <span class="feature__icon">⚡</span>
+          <span class="feature__label">Instant Questions</span>
+        </div>
+        <div class="feature">
+          <span class="feature__icon">🤖</span>
+          <span class="feature__label">AI Evaluation</span>
+        </div>
+        <div class="feature">
+          <span class="feature__icon">📊</span>
+          <span class="feature__label">Track Progress</span>
+        </div>
+        <div class="feature">
+          <span class="feature__icon">💡</span>
+          <span class="feature__label">Smart Feedback</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

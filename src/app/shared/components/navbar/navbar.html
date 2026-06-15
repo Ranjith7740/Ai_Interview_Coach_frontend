@@ -1,0 +1,17 @@
+<nav class="navbar">
+  <a routerLink="/home" class="navbar__brand">
+    <div class="navbar__logo">AI</div>
+    <span class="navbar__title">Interview Coach</span>
+  </a>
+  <div class="navbar__links">
+    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="navbar__link">
+      Home
+    </a>
+    <a routerLink="/dashboard" routerLinkActive="active" class="navbar__link">
+      Dashboard
+    </a>
+    <a routerLink="/history" routerLinkActive="active" class="navbar__link">
+      History
+    </a>
+  </div>
+</nav>

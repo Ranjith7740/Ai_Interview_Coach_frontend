@@ -1,0 +1,12 @@
+<div class="stat-card" [class]="'stat-card--' + color()">
+  <div class="stat-card__icon-wrap">
+    <span class="stat-card__icon">{{ icon() }}</span>
+  </div>
+  <div class="stat-card__body">
+    <div class="stat-card__value">{{ value() }}</div>
+    <div class="stat-card__title">{{ title() }}</div>
+    @if (subtitle()) {
+      <div class="stat-card__subtitle">{{ subtitle() }}</div>
+    }
+  </div>
+</div>

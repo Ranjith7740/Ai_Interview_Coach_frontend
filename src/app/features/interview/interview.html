@@ -1,0 +1,49 @@
+<div class="interview-page">
+  @if (loading()) {
+    <app-spinner message="Evaluating your answer with AI..." />
+  } @else {
+    <div class="interview-layout">
+      <div class="interview-header">
+        <button class="btn-back" (click)="goBack()">
+          ← Back
+        </button>
+        <span class="skill-tag">{{ state.selectedSkill() }}</span>
+      </div>
+
+      <div class="question-card">
+        <div class="question-card__label">Question</div>
+        <p class="question-card__text">{{ state.currentQuestion()?.question }}</p>
+      </div>
+
+      <div class="answer-section">
+        <div class="answer-header">
+          <label class="answer-label" for="answer">Your Answer</label>
+          <span class="word-count">{{ wordCount }} words</span>
+        </div>
+        <textarea
+          id="answer"
+          class="answer-textarea"
+          placeholder="Write a detailed answer. Include examples, code concepts, or explanations where relevant..."
+          rows="9"
+          [ngModel]="answer()"
+          (ngModelChange)="onAnswerChange($event)"
+        ></textarea>
+      </div>
+
+      @if (error()) {
+        <div class="alert alert--error">{{ error() }}</div>
+      }
+
+      <button
+        class="btn btn--primary btn--block"
+        [disabled]="!answer().trim()"
+        (click)="submitAnswer()"
+      >
+        Submit for Evaluation
+        <span class="btn__arrow">→</span>
+      </button>
+
+      <p class="hint">Your answer will be evaluated by AI for accuracy and completeness.</p>
+    </div>
+  }
+</div>

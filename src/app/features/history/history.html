@@ -1,0 +1,84 @@
+<div class="history-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Interview History</h1>
+      <p class="page-subtitle">Review all your past interview sessions</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <app-spinner message="Loading your history..." />
+  } @else if (error()) {
+    <div class="alert alert--error">⚠ {{ error() }}</div>
+  } @else {
+    <!-- Filter Bar -->
+    @if (interviews().length > 0) {
+      <div class="filter-bar">
+        <button
+          class="filter-btn"
+          [class.filter-btn--active]="filterSkill() === ''"
+          (click)="filterSkill.set('')"
+        >All</button>
+        @for (skill of uniqueSkills(); track skill) {
+          <button
+            class="filter-btn"
+            [class.filter-btn--active]="filterSkill() === skill"
+            (click)="filterSkill.set(skill)"
+          >{{ skill }}</button>
+        }
+      </div>
+    }
+
+    <!-- Table -->
+    @if (filtered().length === 0) {
+      <div class="empty-state">
+        <span class="empty-state__icon">📋</span>
+        <h3 class="empty-state__title">No interviews yet</h3>
+        <p class="empty-state__text">
+          Complete an interview session to see your history here.
+        </p>
+        <a class="btn btn--primary" href="/home">Start an Interview</a>
+      </div>
+    } @else {
+      <div class="table-card">
+        <div class="table-meta">
+          {{ filtered().length }} session{{ filtered().length !== 1 ? 's' : '' }}
+        </div>
+        <div class="table-scroll">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Skill</th>
+                <th>Score</th>
+                <th>Date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of filtered(); track item.id) {
+                <tr class="table-row">
+                  <td>
+                    <span class="skill-chip">{{ item.skill }}</span>
+                  </td>
+                  <td>
+                    <span class="badge" [class]="scoreClass(item.score)">
+                      {{ item.score }}/10
+                    </span>
+                  </td>
+                  <td class="date-cell">
+                    {{ item.date | date: 'MMM d, y' }}
+                  </td>
+                  <td class="action-cell">
+                    <button class="btn-view" (click)="viewDetail(item.id)">
+                      View →
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+</div>

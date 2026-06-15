@@ -1,0 +1,61 @@
+<div class="details-page">
+  @if (loading()) {
+    <app-spinner message="Loading interview details..." />
+  } @else if (error()) {
+    <div class="alert alert--error">⚠ {{ error() }}</div>
+  } @else if (detail()) {
+    <div class="details-layout">
+      <!-- Header -->
+      <div class="details-header">
+        <button class="btn-back" (click)="goBack()">← Back to History</button>
+        <div class="header-meta">
+          <span class="skill-tag">{{ detail()!.skill }}</span>
+          <span class="date-label">{{ detail()!.date | date: 'MMMM d, y' }}</span>
+        </div>
+      </div>
+
+      <!-- Score Banner -->
+      <div class="score-banner" [class]="'score-banner--' + scoreColor">
+        <div class="score-banner__value">{{ detail()!.score }}/10</div>
+        <div class="score-banner__label">Final Score</div>
+      </div>
+
+      <!-- Question -->
+      <div class="section-card">
+        <div class="section-label">Question</div>
+        <p class="section-content">{{ detail()!.question }}</p>
+      </div>
+
+      <!-- Answer -->
+      <div class="section-card">
+        <div class="section-label">Your Answer</div>
+        <p class="section-content answer-content">{{ detail()!.answer }}</p>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section-card">
+        <div class="section-label">
+          <span>💬</span> AI Feedback
+        </div>
+        <p class="section-content">{{ detail()!.feedback }}</p>
+      </div>
+
+      <!-- Improvements -->
+      @if (detail()!.improvements.length) {
+        <div class="section-card">
+          <div class="section-label">
+            <span>🚀</span> Improvement Areas
+          </div>
+          <ul class="improvements-list">
+            @for (item of detail()!.improvements; track item) {
+              <li class="improvement-item">
+                <span class="improvement-item__dot"></span>
+                {{ item }}
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,62 @@
+<div class="dashboard-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Your interview performance at a glance</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <app-spinner message="Loading your stats..." />
+  } @else if (error()) {
+    <div class="alert alert--error">
+      <span>⚠</span> {{ error() }}
+    </div>
+  } @else {
+    <!-- Stat Cards -->
+    <div class="stats-grid">
+      <app-stat-card
+        title="Total Interviews"
+        [value]="stats()?.totalInterviews ?? 0"
+        icon="🎯"
+        color="primary"
+      />
+      <app-stat-card
+        title="Average Score"
+        [value]="avgScoreDisplay + ' / 10'"
+        icon="📊"
+        color="success"
+      />
+      <app-stat-card
+        title="Best Skill"
+        [value]="stats()?.bestSkill ?? '—'"
+        icon="🏆"
+        color="warning"
+        subtitle="Highest average score"
+      />
+      <app-stat-card
+        title="Weakest Skill"
+        [value]="stats()?.weakestSkill ?? '—'"
+        icon="📚"
+        color="error"
+        subtitle="Focus area"
+      />
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <h2 class="chart-card__title">Score Trend</h2>
+        <span class="chart-card__badge">Last {{ trend().length }} sessions</span>
+      </div>
+      @if (trend().length > 0) {
+        <app-score-chart [data]="trend()" />
+      } @else {
+        <div class="chart-empty">
+          <span class="chart-empty__icon">📈</span>
+          <p>No interview data yet. Complete some interviews to see your trend!</p>
+        </div>
+      }
+    </div>
+  }
+</div>

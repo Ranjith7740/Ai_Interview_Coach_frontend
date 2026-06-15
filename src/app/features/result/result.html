@@ -1,0 +1,77 @@
+<div class="result-page">
+  <div class="result-layout">
+    <!-- Score Hero -->
+    <div class="score-hero" [class]="'score-hero--' + scoreColor">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120" class="score-ring__svg">
+          <circle
+            cx="60" cy="60" r="52"
+            fill="none"
+            stroke="currentColor"
+            stroke-opacity="0.15"
+            stroke-width="10"
+          />
+          <circle
+            cx="60" cy="60" r="52"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="10"
+            stroke-linecap="round"
+            stroke-dasharray="326.73"
+            [attr.stroke-dashoffset]="326.73 - (326.73 * scorePercent / 100)"
+            transform="rotate(-90 60 60)"
+            class="score-ring__progress"
+          />
+        </svg>
+        <div class="score-ring__label">
+          <span class="score-ring__value">{{ state.currentResult()?.score }}/10</span>
+          <span class="score-ring__text">{{ scoreLabel }}</span>
+        </div>
+      </div>
+      <div class="score-hero__meta">
+        <div class="score-hero__skill">{{ state.currentResult()?.skill }}</div>
+        <div class="score-hero__title">Interview Result</div>
+      </div>
+    </div>
+
+    <!-- Feedback -->
+    <div class="section-card">
+      <h3 class="section-title">
+        <span class="section-title__icon">💬</span>
+        AI Feedback
+      </h3>
+      <p class="feedback-text">{{ state.currentResult()?.feedback }}</p>
+    </div>
+
+    <!-- Improvements -->
+    @if (state.currentResult()?.improvements?.length) {
+      <div class="section-card">
+        <h3 class="section-title">
+          <span class="section-title__icon">🚀</span>
+          Areas to Improve
+        </h3>
+        <ul class="improvements-list">
+          @for (item of state.currentResult()?.improvements; track item) {
+            <li class="improvement-item">
+              <span class="improvement-item__dot"></span>
+              {{ item }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn btn--primary" (click)="tryAgain()">
+        Try Again
+      </button>
+      <button class="btn btn--secondary" (click)="viewHistory()">
+        View History
+      </button>
+      <button class="btn btn--ghost" (click)="restartInterview()">
+        Change Skill
+      </button>
+    </div>
+  </div>
+</div>
