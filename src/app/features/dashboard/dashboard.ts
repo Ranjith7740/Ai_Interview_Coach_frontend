@@ -4,6 +4,7 @@ import { DashboardStats, ScoreTrend } from '../../models/dashboard.model';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { ScoreChart } from '../../shared/components/score-chart/score-chart';
 import { Spinner } from '../../shared/components/spinner/spinner';
+import { forkJoin } from 'rxjs'; // Import forkJoin
 
 @Component({
   selector: 'app-dashboard',
@@ -23,18 +24,27 @@ export class Dashboard implements OnInit {
     this.loadData();
   }
 
-  private loadData(): void {
+ private loadData(): void {
     this.loading.set(true);
     this.error.set('');
 
-    this.dashboardService.getStats().subscribe({
-      next: (s) => this.stats.set(s),
-      error: (err: Error) => this.error.set(err.message),
-    });
+    // Execute streams in parallel
+    forkJoin({
+      statsResponse: this.dashboardService.getStats(),
+      trendResponse: this.dashboardService.getTrend()
+    }).subscribe({
+      next: (result: any) => {
+        const statsData = result.statsResponse?.data || null;
+        const rawTrendData = result.trendResponse?.data || [];
 
-    this.dashboardService.getTrend().subscribe({
-      next: (t) => {
-        this.trend.set(t);
+        // Map 'averageScore' from the backend to 'score' for your TrendPoint interface
+        const trendData: ScoreTrend = rawTrendData.map((item: any) => ({
+          date: item.date,
+          score: item.averageScore
+        }));
+
+        this.stats.set(statsData);
+        this.trend.set(trendData);
         this.loading.set(false);
       },
       error: (err: Error) => {
@@ -46,6 +56,6 @@ export class Dashboard implements OnInit {
 
   get avgScoreDisplay(): string {
     const avg = this.stats()?.averageScore;
-    return avg !== undefined ? avg.toFixed(1) : '—';
+    return avg !== undefined && avg !== null ? avg.toFixed(1) : '—';
   }
 }

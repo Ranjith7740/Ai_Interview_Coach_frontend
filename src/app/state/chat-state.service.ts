@@ -76,4 +76,7 @@ export class ChatStateService {
   private makeId(): string {
     return `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   }
+  setSessionId(id: string): void {
+  this._sessionId.set(id);
+}
 }
