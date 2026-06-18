@@ -1,0 +1,40 @@
+<div class="bubble-row" [class.bubble-row--user]="isUser()">
+  @if (!isUser()) {
+    <div class="bubble-avatar bubble-avatar--ai">AI</div>
+  }
+
+  <div
+    class="bubble"
+    [class.bubble--user]="isUser()"
+    [class.bubble--ai]="!isUser()"
+    [class.bubble--question]="isQuestion()"
+    [class.bubble--evaluation]="isEvaluation()"
+  >
+    @if (isQuestion()) {
+      <div class="bubble__type-tag">
+        <span>❓</span> Interview Question
+      </div>
+    }
+
+    @if (isEvaluation() && hasScore()) {
+      <div class="bubble__score" [class]="'bubble__score--' + scoreColor">
+        <span class="bubble__score-value">{{ message().metadata!.score }}/10</span>
+        <span class="bubble__score-label">Score</span>
+      </div>
+    }
+
+    <p class="bubble__content">{{ message().content }}</p>
+
+    @if (isEvaluation() && message().metadata?.skill) {
+      <div class="bubble__skill-tag">{{ message().metadata!.skill }}</div>
+    }
+
+    <span class="bubble__time">
+      {{ message().timestamp | date: 'HH:mm' }}
+    </span>
+  </div>
+
+  @if (isUser()) {
+    <div class="bubble-avatar bubble-avatar--user">You</div>
+  }
+</div>

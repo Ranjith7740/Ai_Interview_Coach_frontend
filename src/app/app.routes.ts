@@ -2,11 +2,47 @@ import { Routes } from '@angular/router';
 import { interviewGuard, resultGuard } from './core/guards/interview.guard';
 
 export const routes: Routes = [
+  // Default → AI Chat
+  { path: '', redirectTo: 'chat', pathMatch: 'full' },
+
+  // ── AI Agent ─────────────────────────────────────────
   {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full',
+    path: 'chat',
+    loadComponent: () => import('./features/chat/chat').then((m) => m.Chat),
   },
+
+  // ── Analytics ────────────────────────────────────────
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+  },
+  {
+    path: 'progress',
+    loadComponent: () =>
+      import('./features/progress/progress').then((m) => m.Progress),
+  },
+  {
+    path: 'recommendations',
+    loadComponent: () =>
+      import('./features/recommendations/recommendations').then(
+        (m) => m.Recommendations
+      ),
+  },
+
+  // ── History ──────────────────────────────────────────
+  {
+    path: 'history',
+    loadComponent: () =>
+      import('./features/history/history').then((m) => m.History),
+  },
+  {
+    path: 'details/:id',
+    loadComponent: () =>
+      import('./features/details/details').then((m) => m.Details),
+  },
+
+  // ── Classic Interview Flow ────────────────────────────
   {
     path: 'home',
     loadComponent: () => import('./features/home/home').then((m) => m.Home),
@@ -23,23 +59,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/result/result').then((m) => m.Result),
   },
-  {
-    path: 'dashboard',
-    loadComponent: () =>
-      import('./features/dashboard/dashboard').then((m) => m.Dashboard),
-  },
-  {
-    path: 'history',
-    loadComponent: () =>
-      import('./features/history/history').then((m) => m.History),
-  },
-  {
-    path: 'details/:id',
-    loadComponent: () =>
-      import('./features/details/details').then((m) => m.Details),
-  },
-  {
-    path: '**',
-    redirectTo: 'home',
-  },
+
+  { path: '**', redirectTo: 'chat' },
 ];

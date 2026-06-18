@@ -1,17 +1,90 @@
-<nav class="navbar">
-  <a routerLink="/home" class="navbar__brand">
-    <div class="navbar__logo">AI</div>
-    <span class="navbar__title">Interview Coach</span>
-  </a>
-  <div class="navbar__links">
-    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="navbar__link">
-      Home
+<!-- Sticky host: nav bar + slide-down mobile drawer live together -->
+<header class="nav-host">
+
+  <!-- ── Top Bar ─────────────────────────────────────────── -->
+  <nav class="navbar">
+
+    <!-- Brand -->
+    <a routerLink="/chat" class="navbar__brand" (click)="closeMenu()">
+      <div class="navbar__logo">AI</div>
+      <span class="navbar__title">Interview Coach</span>
     </a>
-    <a routerLink="/dashboard" routerLinkActive="active" class="navbar__link">
-      Dashboard
+
+    <!-- Desktop / Tablet nav links -->
+    <div class="navbar__links">
+      <a routerLink="/chat" routerLinkActive="active" class="navbar__link">
+        <span class="navbar__link-icon">💬</span>
+        <span class="navbar__link-label">Chat</span>
+      </a>
+      <a routerLink="/dashboard" routerLinkActive="active" class="navbar__link">
+        <span class="navbar__link-icon">📊</span>
+        <span class="navbar__link-label">Dashboard</span>
+      </a>
+      <a routerLink="/progress" routerLinkActive="active" class="navbar__link">
+        <span class="navbar__link-icon">📈</span>
+        <span class="navbar__link-label">Progress</span>
+      </a>
+      <a routerLink="/recommendations" routerLinkActive="active" class="navbar__link">
+        <span class="navbar__link-icon">💡</span>
+        <span class="navbar__link-label">Learn</span>
+      </a>
+      <a routerLink="/history" routerLinkActive="active" class="navbar__link">
+        <span class="navbar__link-icon">🕒</span>
+        <span class="navbar__link-label">History</span>
+      </a>
+    </div>
+
+    <!-- Desktop CTA -->
+    <a routerLink="/home" class="navbar__cta">
+      Start Interview
     </a>
-    <a routerLink="/history" routerLinkActive="active" class="navbar__link">
-      History
+
+    <!-- Hamburger (mobile only) -->
+    <button
+      class="navbar__hamburger"
+      [class.navbar__hamburger--open]="menuOpen()"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen()"
+      aria-label="Toggle navigation"
+    >
+      <span class="hb-bar"></span>
+      <span class="hb-bar"></span>
+      <span class="hb-bar"></span>
+    </button>
+
+  </nav>
+
+  <!-- ── Mobile Slide-Down Drawer ───────────────────────── -->
+  <div class="nav-drawer" [class.nav-drawer--open]="menuOpen()">
+    <a routerLink="/chat"            routerLinkActive="active" class="drawer__link" (click)="closeMenu()">
+      <span class="drawer__icon">💬</span> Chat
+    </a>
+    <a routerLink="/dashboard"       routerLinkActive="active" class="drawer__link" (click)="closeMenu()">
+      <span class="drawer__icon">📊</span> Dashboard
+    </a>
+    <a routerLink="/progress"        routerLinkActive="active" class="drawer__link" (click)="closeMenu()">
+      <span class="drawer__icon">📈</span> Progress
+    </a>
+    <a routerLink="/recommendations" routerLinkActive="active" class="drawer__link" (click)="closeMenu()">
+      <span class="drawer__icon">💡</span> Learn
+    </a>
+    <a routerLink="/history"         routerLinkActive="active" class="drawer__link" (click)="closeMenu()">
+      <span class="drawer__icon">🕒</span> History
+    </a>
+
+    <div class="drawer__divider"></div>
+
+    <a routerLink="/home" class="drawer__cta" (click)="closeMenu()">
+      🎯 Start Interview
     </a>
   </div>
-</nav>
+
+</header>
+
+<!-- Backdrop overlay (closes drawer on outside click) -->
+<div
+  class="nav-overlay"
+  [class.nav-overlay--open]="menuOpen()"
+  (click)="closeMenu()"
+  aria-hidden="true"
+></div>

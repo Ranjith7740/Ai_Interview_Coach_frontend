@@ -1,0 +1,18 @@
+<div class="wac" [class]="'wac--' + scoreClass()">
+  <div class="wac__header">
+    <span class="wac__skill">{{ area().skill }}</span>
+    <span class="wac__score" [class]="'wac__score--' + scoreClass()">
+      {{ area().averageScore.toFixed(1) }}/10
+    </span>
+  </div>
+
+  <div class="wac__bar-track">
+    <div class="wac__bar-fill" [style.width.%]="barWidth()" [class]="'wac__bar-fill--' + scoreClass()"></div>
+  </div>
+
+  <div class="wac__meta">
+    <span class="wac__attempts">{{ area().attempts }} attempts</span>
+  </div>
+
+  <p class="wac__suggestion">{{ area().suggestion }}</p>
+</div>

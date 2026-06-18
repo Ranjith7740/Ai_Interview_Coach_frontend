@@ -1,0 +1,100 @@
+<div class="recs-page">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Study Recommendations</h1>
+      <p class="page-subtitle">Your personalised AI-generated learning plan</p>
+    </div>
+    @if (plan()) {
+      <div class="plan-meta">
+        <span class="plan-meta__label">Generated</span>
+        <span class="plan-meta__value">{{ plan()!.generatedAt | date: 'MMM d, y' }}</span>
+      </div>
+    }
+  </div>
+
+  @if (loading()) {
+    <app-spinner message="Building your study plan..." />
+  } @else if (error()) {
+    <div class="alert alert--error">⚠ {{ error() }}</div>
+  } @else if (plan()) {
+
+    <!-- Plan Overview Banner -->
+    <div class="overview-banner">
+      <div class="overview-banner__block">
+        <div class="overview-banner__value">{{ plan()!.weeklyGoal }}</div>
+        <div class="overview-banner__label">Sessions / week</div>
+      </div>
+      <div class="overview-banner__divider"></div>
+      <div class="overview-banner__block">
+        <div class="overview-banner__value">{{ plan()!.focusSkill }}</div>
+        <div class="overview-banner__label">Focus Skill</div>
+      </div>
+      <div class="overview-banner__divider"></div>
+      <div class="overview-banner__block">
+        <div class="overview-banner__value">{{ plan()!.recommendations.length }}</div>
+        <div class="overview-banner__label">Topics</div>
+      </div>
+    </div>
+
+    <!-- Priority Filter -->
+    <div class="filter-bar">
+      <button class="filter-btn" [class.filter-btn--active]="activeFilter() === 'all'"
+        (click)="activeFilter.set('all')">All</button>
+      <button class="filter-btn filter-btn--high" [class.filter-btn--active]="activeFilter() === 'high'"
+        (click)="activeFilter.set('high')">🔴 High Priority</button>
+      <button class="filter-btn filter-btn--medium" [class.filter-btn--active]="activeFilter() === 'medium'"
+        (click)="activeFilter.set('medium')">🟡 Medium</button>
+      <button class="filter-btn filter-btn--low" [class.filter-btn--active]="activeFilter() === 'low'"
+        (click)="activeFilter.set('low')">🟢 Low</button>
+    </div>
+
+    <!-- Recommendation Cards -->
+    @if (filtered().length === 0) {
+      <div class="empty-state">No recommendations for this priority level.</div>
+    } @else {
+      <div class="recs-grid">
+        @for (rec of filtered(); track rec.id) {
+          <div class="rec-card" [class]="'rec-card--' + rec.priority">
+            <div class="rec-card__header">
+              <span class="skill-tag">{{ rec.skill }}</span>
+              <span class="priority-badge" [class]="'priority-badge--' + rec.priority">
+                {{ rec.priority }}
+              </span>
+            </div>
+
+            <h3 class="rec-card__title">{{ rec.title }}</h3>
+            <p class="rec-card__desc">{{ rec.description }}</p>
+
+            <div class="rec-card__meta">
+              <span class="rec-card__time">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {{ rec.estimatedTime }}
+              </span>
+            </div>
+
+            @if (rec.resources.length > 0) {
+              <div class="rec-card__resources">
+                <div class="rec-card__resources-label">Resources</div>
+                <div class="resources-list">
+                  @for (res of rec.resources; track res.title) {
+                    <a
+                      class="resource-chip"
+                      [class]="'resource-chip--' + res.type"
+                      [href]="res.url"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      <span>{{ resourceIcon(res.type) }}</span>
+                      {{ res.title }}
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
