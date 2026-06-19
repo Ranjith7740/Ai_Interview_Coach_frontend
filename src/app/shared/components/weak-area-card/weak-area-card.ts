@@ -10,11 +10,11 @@ export class WeakAreaCard {
   area = input.required<WeakArea>();
 
   readonly barWidth = computed(() =>
-    Math.round((this.area().averageScore / 10) * 100)
+    Math.round((this.area().avgScore / 10) * 100)
   );
 
   readonly scoreClass = computed(() => {
-    const s = this.area().averageScore;
+    const s = this.area().avgScore;
     if (s >= 7) return 'good';
     if (s >= 5) return 'average';
     return 'poor';

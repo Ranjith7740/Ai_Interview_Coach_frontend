@@ -19,17 +19,12 @@
         <div class="mini-stat__label">Total Sessions</div>
       </div>
       <div class="mini-stat">
-        <div class="mini-stat__value" [class]="'mini-stat__value--' + improvementClass">
-          {{ improvementText }}
-        </div>
-        <div class="mini-stat__label">Overall Improvement</div>
+        <div class="mini-stat__value">{{ avgScoreDisplay }}</div>
+        <div class="mini-stat__label">Average Score</div>
       </div>
       <div class="mini-stat">
-        <div class="mini-stat__value">
-          {{ progress()?.currentStreak ?? 0 }}
-          <span class="mini-stat__emoji">🔥</span>
-        </div>
-        <div class="mini-stat__label">Day Streak</div>
+        <div class="mini-stat__value">{{ progress()?.skillStats?.length ?? 0 }}</div>
+        <div class="mini-stat__label">Skills Practised</div>
       </div>
     </div>
 

@@ -20,10 +20,9 @@ export class Progress implements OnInit {
 
   readonly progress = signal<ProgressData | null>(null);
   readonly weakAreas = signal<WeakArea[]>([]);
+  readonly trend = signal<TrendPoint[]>([]);
   readonly loading = signal<boolean>(false);
   readonly error = signal<string>('');
-
-  readonly trend = signal<TrendPoint[]>([]);
 
   ngOnInit(): void {
     this.loadData();
@@ -37,7 +36,7 @@ export class Progress implements OnInit {
     }).subscribe({
       next: ({ progress, weakAreas }) => {
         this.progress.set(progress);
-        this.trend.set(progress.trend);
+        this.trend.set(progress.scoreTrend ?? []);
         this.weakAreas.set(weakAreas);
         this.loading.set(false);
       },
@@ -48,15 +47,8 @@ export class Progress implements OnInit {
     });
   }
 
-  get improvementText(): string {
-    const v = this.progress()?.improvement ?? 0;
-    return v > 0 ? `+${v}%` : `${v}%`;
-  }
-
-  get improvementClass(): string {
-    const v = this.progress()?.improvement ?? 0;
-    if (v > 0) return 'positive';
-    if (v < 0) return 'negative';
-    return 'neutral';
+  get avgScoreDisplay(): string {
+    const avg = this.progress()?.overallAvgScore;
+    return avg !== undefined && avg !== null ? avg.toFixed(1) : '—';
   }
 }

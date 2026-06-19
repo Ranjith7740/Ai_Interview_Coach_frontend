@@ -4,7 +4,6 @@ export type MessageType = 'text' | 'question' | 'evaluation' | 'info';
 export interface MessageMetadata {
   score?: number;
   skill?: string;
-  questionId?: string;
 }
 
 export interface ChatMessage {
@@ -19,13 +18,25 @@ export interface ChatMessage {
 export interface ChatRequest {
   sessionId: string;
   message: string;
+  skill?: string;
+}
+
+export interface QuestionData {
+  question?: string;
+}
+
+export interface EvaluationData {
+  score?: number;
+  feedback?: string;
 }
 
 export interface ChatResponse {
   sessionId: string;
   message: string;
-  type: MessageType;
-  metadata?: MessageMetadata;
+  intent?: string;
+  agentsUsed?: string[];
+  questionData?: QuestionData;
+  evaluationData?: EvaluationData;
 }
 
 export interface AgentSession {

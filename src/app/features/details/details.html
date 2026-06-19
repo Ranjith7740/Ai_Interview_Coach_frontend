@@ -10,7 +10,7 @@
         <button class="btn-back" (click)="goBack()">← Back to History</button>
         <div class="header-meta">
           <span class="skill-tag">{{ detail()!.skill }}</span>
-          <span class="date-label">{{ detail()!.date | date: 'MMMM d, y' }}</span>
+          <span class="date-label">{{ detail()!.createdAt | date: 'MMMM d, y' }}</span>
         </div>
       </div>
 
@@ -41,19 +41,12 @@
       </div>
 
       <!-- Improvements -->
-      @if (detail()!.improvements.length) {
+      @if (detail()!.improvementSuggestions) {
         <div class="section-card">
           <div class="section-label">
             <span>🚀</span> Improvement Areas
           </div>
-          <ul class="improvements-list">
-            @for (item of detail()!.improvements; track item) {
-              <li class="improvement-item">
-                <span class="improvement-item__dot"></span>
-                {{ item }}
-              </li>
-            }
-          </ul>
+          <p class="section-content">{{ detail()!.improvementSuggestions }}</p>
         </div>
       }
     </div>

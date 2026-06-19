@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { API_ENDPOINTS } from '../core/constants/api.constants';
+import { ApiResponse, PagedData } from '../core/models/api-response.model';
 import {
   QuestionRequest,
   QuestionResponse,
@@ -23,10 +25,14 @@ export class InterviewService {
   }
 
   getInterviews(): Observable<InterviewSummary[]> {
-    return this.http.get<InterviewSummary[]>(API_ENDPOINTS.INTERVIEWS);
+    return this.http
+      .get<ApiResponse<PagedData<InterviewSummary>>>(API_ENDPOINTS.INTERVIEWS)
+      .pipe(map((r) => r.data.content));
   }
 
   getInterviewById(id: string): Observable<InterviewDetail> {
-    return this.http.get<InterviewDetail>(API_ENDPOINTS.INTERVIEW_BY_ID(id));
+    return this.http
+      .get<ApiResponse<InterviewDetail>>(API_ENDPOINTS.INTERVIEW_BY_ID(id))
+      .pipe(map((r) => r.data));
   }
 }

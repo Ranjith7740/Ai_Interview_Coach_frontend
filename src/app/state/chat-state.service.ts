@@ -35,9 +35,8 @@ export class ChatStateService {
       id: this.makeId(),
       role: 'assistant',
       content: response.message,
-      type: response.type,
+      type: 'text',
       timestamp: new Date().toISOString(),
-      metadata: response.metadata,
     };
     this._messages.update((msgs) => [...msgs, msg]);
     this._isThinking.set(false);

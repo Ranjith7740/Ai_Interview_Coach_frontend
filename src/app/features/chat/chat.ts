@@ -11,6 +11,7 @@ import { AgentService } from '../../services/agent.service';
 import { ChatStateService } from '../../state/chat-state.service';
 import { ChatBubble } from '../../shared/components/chat-bubble/chat-bubble';
 import { ChatResponse } from '../../models/chat.model';
+import { ChatMessage } from '../../models/chat.model';
 
 const SUGGESTIONS = [
   'Start a Java interview',
@@ -53,44 +54,29 @@ export class Chat {
   }
 
   send(): void {
-  const text = this.inputText().trim();
-  if (!text || this.chatState.isThinking()) return;
+    const text = this.inputText().trim();
+    if (!text || this.chatState.isThinking()) return;
 
-  this.inputText.set('');
-  this.resetTextarea();
-  this.chatState.addUserMessage(text);
+    this.inputText.set('');
+    this.resetTextarea();
+    this.chatState.addUserMessage(text);
 
-  this.agentService
-    .chat({ sessionId: this.chatState.sessionId(), message: text })
-    .subscribe({
-      next: (response: any) => {
-        // 1. Extract the question string out of your backend structure safely
-        const aiMessageText = response?.data?.questionData?.question 
-          || response?.data?.message 
-          || 'No message text returned.';
-
-        // 2. Safely sync up your session ID reference inside the shared store
-        const currentSessionId = response?.data?.sessionId || this.chatState.sessionId();
-        if (response?.data?.sessionId) {
-          this.chatState.setSessionId(response.data.sessionId);
-        }
-
-        // 3. Construct the exact ChatResponse object structure with all required fields
-        const simulatedResponse: ChatResponse = {
-          sessionId: currentSessionId, // Added the missing required property
-          message: aiMessageText,
-          type: 'text', // Casts implicitly to MessageType
-          metadata: response?.data?.metadata || undefined
-        };
-
-        // Pass the properly constructed object to your state manager
-        this.chatState.addAssistantMessage(simulatedResponse);
-      },
-      error: () => {
-        this.chatState.setError();
-      },
-    });
-}
+    this.agentService
+      .chat({ sessionId: this.chatState.sessionId(), message: text })
+      .subscribe({
+        next: (response: ChatResponse) => {
+          if (response.sessionId) {
+            this.chatState.setSessionId(response.sessionId);
+          }
+          const displayText =
+            response.questionData?.question ?? response.message ?? '';
+          this.chatState.addAssistantMessage({ ...response, message: displayText });
+        },
+        error: () => {
+          this.chatState.setError();
+        },
+      });
+  }
 
   sendSuggestion(text: string): void {
     this.inputText.set(text);
@@ -116,9 +102,26 @@ export class Chat {
 
   loadSession(sessionId: string): void {
     this.agentService.getHistory(sessionId).subscribe({
-      next: (messages) => {
-        this.chatState.loadMessages(messages);
+      next: (messages: Array<{ role: string; message: string }>) => {
+        const formattedMessages: ChatMessage[] = messages.map((msg, index) => {
+          // Determine message type based on whether it's user or assistant
+          const isUser = msg.role === 'user';
+          
+          return {
+            id: `hist-${sessionId}-${index}-${Date.now()}`,
+            role: isUser ? 'user' : 'assistant',
+            content: msg.message, // Mapping the raw 'message' string to 'content'
+            type: isUser ? 'text' : 'question', // Or match your business logic types
+            timestamp: new Date().toISOString(),
+            metadata: {} 
+          };
+        });
+
+        this.chatState.loadMessages(formattedMessages);
       },
+      error: (err) => {
+        console.error('Failed to load session history:', err);
+      }
     });
   }
 

@@ -1,41 +1,33 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { RecommendationService } from '../../services/recommendation.service';
-import { StudyPlan, Recommendation, Priority, ResourceType } from '../../models/recommendation.model';
+import { Recommendation, Priority } from '../../models/recommendation.model';
 import { Spinner } from '../../shared/components/spinner/spinner';
-import { DatePipe } from '@angular/common';
-
-const RESOURCE_ICONS: Record<ResourceType, string> = {
-  article:  '📄',
-  video:    '🎥',
-  practice: '💻',
-  course:   '🎓',
-};
 
 @Component({
   selector: 'app-recommendations',
-  imports: [Spinner, DatePipe],
+  imports: [Spinner],
   templateUrl: './recommendations.html',
   styleUrl: './recommendations.css',
 })
 export class Recommendations implements OnInit {
   private readonly recommendationService = inject(RecommendationService);
 
-  readonly plan = signal<StudyPlan | null>(null);
+  readonly recommendations = signal<Recommendation[]>([]);
   readonly loading = signal<boolean>(false);
   readonly error = signal<string>('');
   readonly activeFilter = signal<Priority | 'all'>('all');
 
   readonly filtered = computed<Recommendation[]>(() => {
-    const recs = this.plan()?.recommendations ?? [];
+    const all = this.recommendations();
     const f = this.activeFilter();
-    return f === 'all' ? recs : recs.filter((r) => r.priority === f);
+    return f === 'all' ? all : all.filter((r) => r.priority === f);
   });
 
   ngOnInit(): void {
     this.loading.set(true);
-    this.recommendationService.getStudyPlan().subscribe({
-      next: (plan) => {
-        this.plan.set(plan);
+    this.recommendationService.getRecommendations().subscribe({
+      next: (recs) => {
+        this.recommendations.set(recs);
         this.loading.set(false);
       },
       error: (err: Error) => {
@@ -43,9 +35,5 @@ export class Recommendations implements OnInit {
         this.loading.set(false);
       },
     });
-  }
-
-  resourceIcon(type: ResourceType): string {
-    return RESOURCE_ICONS[type] ?? '🔗';
   }
 }
