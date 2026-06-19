@@ -1,7 +1,7 @@
 export type Priority = 'high' | 'medium' | 'low';
 
 export interface Recommendation {
-  id: string;
+  id: number;
   targetSkill: string;
   title: string;
   content: string;

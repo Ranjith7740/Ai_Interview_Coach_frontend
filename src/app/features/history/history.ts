@@ -35,18 +35,17 @@ export class History implements OnInit {
     this.loadInterviews();
   }
 
-  private loadInterviews(): void {
+ private loadInterviews(): void {
   this.loading.set(true);
   this.interviewService.getInterviews().subscribe({
     next: (response: any) => {
       const interviewArray = response?.data?.content || [];
       
-      // Explicitly map properties to align backend names with frontend InterviewSummary model
       const mappedInterviews: InterviewSummary[] = interviewArray.map((item: any) => ({
         id: item.id,
         skill: item.skill,
         score: item.score,
-        date: item.createdAt // Maps backend 'createdAt' to frontend 'date'
+        createdAt: item.createdAt // Updated key name to match your interface
       }));
 
       this.interviews.set(mappedInterviews);

@@ -24,11 +24,11 @@ export class InterviewService {
     return this.http.post<EvaluateResponse>(API_ENDPOINTS.EVALUATE, request);
   }
 
-  getInterviews(): Observable<InterviewSummary[]> {
-    return this.http
-      .get<ApiResponse<PagedData<InterviewSummary>>>(API_ENDPOINTS.INTERVIEWS)
-      .pipe(map((r) => r.data.content));
-  }
+  getInterviews(): Observable<ApiResponse<PagedData<InterviewSummary>>> {
+  return this.http.get<ApiResponse<PagedData<InterviewSummary>>>(
+    API_ENDPOINTS.INTERVIEWS
+  );
+}
 
   getInterviewById(id: string): Observable<InterviewDetail> {
     return this.http
